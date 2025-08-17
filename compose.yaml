@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  api:
+    build: .
+    container_name: go-audit-api
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: Go
+      MONGO_COLLECTION: audits
+      RETENTION_DAYS: "90"
+      API_KEYS: "devkey123"
+      PORT: "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+
+volumes:
+  mongodata:
