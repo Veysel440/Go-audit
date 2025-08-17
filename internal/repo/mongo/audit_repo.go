@@ -116,3 +116,22 @@ func (r *Repo) List(ctx context.Context, f service.ListFilter) ([]core.Audit, er
 	}
 	return list, cur.Err()
 }
+
+// NEW: LastByResource implements service.Repo
+func (r *Repo) LastByResource(ctx context.Context, rt, rid string) (core.Audit, error) {
+	var out core.Audit
+	err := r.col.FindOne(
+		ctx,
+		bson.M{"resourceType": rt, "resourceId": rid},
+		options.FindOne().SetSort(bson.D{{Key: "createdAt", Value: -1}}),
+	).Decode(&out)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return core.Audit{}, service.ErrNotFound
+	}
+	return out, err
+}
+
+// NEW: Ping implements service.Repo
+func (r *Repo) Ping(ctx context.Context) error {
+	return r.col.Database().RunCommand(ctx, bson.D{{Key: "ping", Value: 1}}).Err()
+}

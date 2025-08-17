@@ -14,6 +14,9 @@ type Audit struct {
 	Metadata     map[string]any `json:"metadata,omitempty" bson:"metadata,omitempty"`
 	CreatedAt    time.Time      `json:"createdAt"     bson:"createdAt"`
 
+	ChainPrev string `json:"chainPrev,omitempty" bson:"chainPrev,omitempty"`
+	ChainHash string `json:"chainHash,omitempty" bson:"chainHash,omitempty"`
+
 	IdemHash string `json:"-" bson:"idemHash,omitempty"`
 }
 
